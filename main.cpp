@@ -1,32 +1,36 @@
 #include <iostream>
+#include <string>
+#include <fstream>
 
 ////////////////////////////
 //     TODO: 
 // 1. Make ReturnKG and CheckAndReturn% one function
-//
+// 2. Find solution to the file reference
 //
 ////////////////////////////
 
 class Generator {
 private:
-	const enum lifts {squat, bench, deadlift, ohp};
-	double maxes[4]; 
-	double tMax[4]; 
+	enum lifts { squat, bench, deadlift, ohp };
+	double maxes[4];
+	double tMax[4];
 	void generateSets(const char name[], int week, int tMax);
+	void generateCSVSets(const char name[], int week, int tMax, std::ofstream& File);
 	int checkForWeekAndReturnSets(int week, int reps = 0);
 	double checkForWeekAndReturnPercentage(int week, int set);
 	double returnKGAfterPercentageIsApplied(int tMax, int week, int set);
+	void createCSVFile();
 public:
 	explicit Generator();
-	void getMaxes(); 
+	void getMaxes();
 	const void generateProgramFromCurrentMaxes() { generateProgramFromCustomMaxes(tMax[squat], tMax[bench], tMax[deadlift], tMax[ohp]); };
 	void generateProgramFromCustomMaxes(int squatTMax, int benchTMax, int deadlidtTMax, int ohpTMax);
-	
+
 };
+
 
 int main() {
 	Generator g;
-	system("pause");
 	return 0;
 }
 
@@ -35,6 +39,7 @@ Generator::Generator()
 	std::cout << "Welcome to 5/3/1 generator!" << std::endl;
 	getMaxes();
 	generateProgramFromCurrentMaxes();
+	createCSVFile();
 }
 
 void Generator::getMaxes()
@@ -88,33 +93,34 @@ void Generator::generateSets(const char name[], int week, int tMax)
 		std::cout << "Set 3 : " << tMax * 0.6 << " x 3" << std::endl;
 	}
 	for (int i = 4; i < 7; i++) {
-		std::cout << "Set " << i << " : "<< returnKGAfterPercentageIsApplied(tMax, week, i - 3) << " x " << checkForWeekAndReturnSets(week, i - 3) << std::endl;
+		std::cout << "Set " << i << " : " << returnKGAfterPercentageIsApplied(tMax, week, i - 3) << " x " << checkForWeekAndReturnSets(week, i - 3) << std::endl;
 	}
 	std::cout << "Next? (Press enter)" << std::endl;
 	std::cin.get();
 }
 
+
 int Generator::checkForWeekAndReturnSets(int week, int reps)
 {
 	if (week = 1) {
-		return 5; 
+		return 5;
 	}
 	else if (week = 2) {
-		return 3; 
+		return 3;
 	}
 	else if (week = 3) {
 		if (reps = 1) {
 			return 5;
 		}
 		else if (reps = 2) {
-			return 3; 
+			return 3;
 		}
 		else if (reps = 3) {
-			return 1; 
+			return 1;
 		}
 	}
 	else if (week = 4) {
-		return 5; 
+		return 5;
 	}
 	return -1;
 }
@@ -122,11 +128,11 @@ int Generator::checkForWeekAndReturnSets(int week, int reps)
 double Generator::checkForWeekAndReturnPercentage(int week, int set)
 {
 	switch (week) {
-	case 1: 
+	case 1:
 		switch (set) {
-		case 1: 
+		case 1:
 			return 0.65;
-		case 2: 
+		case 2:
 			return 0.75;
 		case 3:
 			return 0.85;
@@ -134,7 +140,7 @@ double Generator::checkForWeekAndReturnPercentage(int week, int set)
 			break;
 		}
 		break;
-	case 2: 
+	case 2:
 		switch (set) {
 		case 1:
 			return 0.7;
@@ -145,8 +151,8 @@ double Generator::checkForWeekAndReturnPercentage(int week, int set)
 		default:
 			break;
 		}
-		break; 
-	case 3: 
+		break;
+	case 3:
 		switch (set) {
 		case 1:
 			return 0.75;
@@ -178,6 +184,48 @@ double Generator::checkForWeekAndReturnPercentage(int week, int set)
 
 double Generator::returnKGAfterPercentageIsApplied(int tMax, int week, int set)
 {
-	return tMax * checkForWeekAndReturnPercentage(week, set); 
+	return tMax * checkForWeekAndReturnPercentage(week, set);
 }
 
+
+
+void Generator::generateCSVSets(const char name[], int week, int tMax, std::ofstream& File) {
+
+	File << "Week" << week << std::endl;
+	File << name << ": " << std::endl;
+	if (week != 4) {
+		File << "Set 1 :," << tMax * 0.4 << ", x 5" << std::endl;
+		File << "Set 2 :," << tMax * 0.5 << ", x 5" << std::endl;
+		File << "Set 3 :," << tMax * 0.6 << ", x 3" << std::endl;
+	}
+	for (int i = 4; i < 7; i++) {
+		File << "Set " << i << " :," << returnKGAfterPercentageIsApplied(tMax, week, i - 3) << ", x " << checkForWeekAndReturnSets(week, i - 3) << std::endl;
+	}
+}
+
+void Generator::createCSVFile() {
+	std::ofstream fileInit;
+	fileInit.open("program.csv");
+
+	if (fileInit.fail()) {
+		std::cout << "An error occured while opening program.csv" << std::endl;
+		return;
+	}
+	std::ofstream& File = fileInit; //temporary, hopefully
+	generateCSVSets("Squat", 1, tMax[squat], File);
+	generateCSVSets("Bench", 1, tMax[bench], File);
+	generateCSVSets("Deadlift", 1, tMax[deadlift], File);
+	generateCSVSets("OHP", 1, tMax[ohp], File);
+	generateCSVSets("Squat", 2, tMax[squat], File);
+	generateCSVSets("Bench", 2, tMax[bench], File);
+	generateCSVSets("Deadlift", 2, tMax[deadlift], File);
+	generateCSVSets("OHP", 2, tMax[ohp], File);
+	generateCSVSets("Squat", 3, tMax[squat], File);
+	generateCSVSets("Bench", 3, tMax[bench], File);
+	generateCSVSets("Deadlift", 3, tMax[deadlift], File);
+	generateCSVSets("OHP", 3, tMax[ohp], File);
+	generateCSVSets("Squat", 4, tMax[squat], File);
+	generateCSVSets("Bench", 4, tMax[bench], File);
+	generateCSVSets("Deadlift", 4, tMax[deadlift], File);
+	generateCSVSets("OHP", 4, tMax[ohp], File);
+}
