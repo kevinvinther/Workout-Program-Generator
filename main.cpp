@@ -11,13 +11,12 @@
 
 class Generator {
 private:
-	enum lifts { squat, bench, deadlift, ohp };
 	double maxes[4] = { 0 };
-	double tMax[4] = { 0 };
 	void generateSets(const char name[], int week, int tMax);
 	void generateCSVSets(const char name[], int week, int tMax, std::ofstream& File);
 	int checkForWeekAndReturnSets(int week, int reps = 0);
 	double checkForWeekAndReturnKG(int week, int set, int tMax);
+	
 public:
 	void createCSVFile();
 	explicit Generator();
@@ -25,6 +24,12 @@ public:
 	const void generateProgramFromCurrentMaxes() { generateProgramFromCustomMaxes(tMax[squat], tMax[bench], tMax[deadlift], tMax[ohp]); };
 	void generateProgramFromCustomMaxes(int squatTMax, int benchTMax, int deadlidtTMax, int ohpTMax);
 
+	int cycle = 1;
+	int item[3];	
+
+	double tMax[4] = { 0 };
+
+	enum lifts { squat, bench, deadlift, ohp };
 };
 
 
@@ -33,22 +38,60 @@ int main() {
 	int answer;
 	Generator gen;
 
+	std::ifstream readMaxes;
+	readMaxes.open("Maxes.txt");
+
+	if(readMaxes.fail()) {
+		std::cout << "Error occured while trying to read maxes." << std::endl;
+	}
+
+	while(!readMaxes.eof()) {
+		readMaxes >> gen.item[0]; 
+		gen.tMax[gen.squat] = gen.item[0];
+		readMaxes >> gen.item[1];
+		gen.tMax[gen.bench] = gen.item[1];
+		readMaxes >> gen.item[2];
+		gen.tMax[gen.deadlift] = gen.item[2];
+		readMaxes >> gen.item[3];
+		gen.tMax[gen.ohp] = gen.item[3];
+	}
+
+
+	readMaxes.close();
+
+
+
+	
 	while (running) {
 		std::cout << "//////////////////////////" << std::endl;
+		std::cout << "// Cycle: " << gen.cycle << "             //" << std::endl;
 		std::cout << "// 1. Generate program  //" << std::endl;
-		std::cout << "// 2. Generate CSV file //" << std::endl;
-		std::cout << "// 3. Exit              //" << std::endl;
+		std::cout << "// 2. Update maxes      //" << std::endl;
+		std::cout << "// 3. Generate CSV file //" << std::endl;
+		std::cout << "// 4. Change cycle      //" << std::endl;
+		std::cout << "// 5. Exit              //" << std::endl;
+		std::cout << "// Training Maxes:      //" << std::endl;
+		std::cout << "// Squat:" << gen.tMax[gen.squat] << "             //" << std::endl;
+		std::cout << "// Bench:" << gen.tMax[gen.bench] << "             //" << std::endl;
+		std::cout << "// Deadlift:" << gen.tMax[gen.deadlift] << "          //" << std::endl;
+		std::cout << "// OHP:" << gen.tMax[gen.ohp] << "               //" << std::endl;
 		std::cout << "//////////////////////////" << std::endl;
 		std::cin >> answer;
 		switch (answer) {
 		case 1:
-			gen.getMaxes();
 			gen.generateProgramFromCurrentMaxes();
 			break;
 		case 2:
-			gen.createCSVFile();
+			gen.getMaxes();
 			break;
 		case 3:
+			gen.createCSVFile();
+			break;
+		case 4:
+			std::cout << "Cycle: "; 
+			std::cin >> gen.cycle;
+			break;
+		case 5:
 			return 0;
 			break;
 		default:
@@ -65,7 +108,7 @@ Generator::Generator()
 
 void Generator::getMaxes()
 {
-	std::cout << "First thing you need to do is enter your maxes:" << std::endl;
+
 	std::cout << "Squat : ";
 	std::cin >> maxes[squat];
 	std::cout << "Bench : ";
@@ -74,14 +117,32 @@ void Generator::getMaxes()
 	std::cin >> maxes[deadlift];
 	std::cout << "OHP : ";
 	std::cin >> maxes[ohp];
-	tMax[squat] = maxes[squat] * 0.9;
+	tMax[squat] = (maxes[squat] * 0.9);
+	tMax[squat] += (cycle * 5) - 5;
 	tMax[bench] = maxes[bench] * 0.9;
+	tMax[bench] += (cycle * 2.5) - 2.5;
 	tMax[deadlift] = maxes[deadlift] * 0.9;
+	tMax[deadlift] += (cycle * 5) - 5;
 	tMax[ohp] = maxes[ohp] * 0.9;
+	tMax[ohp] += (cycle * 2.5) - 2.5;
+
+	std::ofstream Saves("Maxes.txt", std::ofstream::out);
+	Saves << tMax[squat] << std::endl;
+	Saves << tMax[bench] << std::endl;
+	Saves << tMax[deadlift] << std::endl;
+	Saves << tMax[ohp] << std::endl;
+	Saves.close();
+		
 }
 
 void Generator::generateProgramFromCustomMaxes(int squatTMax, int benchTMax, int deadlidtTMax, int ohpTMax)
 {
+	for(int i = 0; i < 4; i++) {
+		if(maxes[i] == 0) {
+			std::cout << "You need to enter your maxes first.\nDo that by choosing \"update maxes\"\nat the main menu.";
+			return;
+		}
+	}
 	generateSets("Squat", 1, tMax[squat]);
 	generateSets("Bench", 1, tMax[bench]);
 	generateSets("Deadlift", 1, tMax[deadlift]);
