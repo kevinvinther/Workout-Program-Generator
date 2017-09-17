@@ -23,6 +23,7 @@ public:
 	void getMaxes();
 	const void generateProgramFromCurrentMaxes() { generateProgramFromCustomMaxes(tMax[squat], tMax[bench], tMax[deadlift], tMax[ohp]); };
 	void generateProgramFromCustomMaxes(int squatTMax, int benchTMax, int deadlidtTMax, int ohpTMax);
+	void make1RM(); 
 
 	int cycle = 1;
 	int item[3];	
@@ -56,12 +57,8 @@ int main() {
 		gen.tMax[gen.ohp] = gen.item[3];
 	}
 
-
 	readMaxes.close();
 
-
-
-	
 	while (running) {
 		std::cout << "//////////////////////////" << std::endl;
 		std::cout << "// Cycle: " << gen.cycle << "             //" << std::endl;
@@ -69,12 +66,13 @@ int main() {
 		std::cout << "// 2. Update maxes      //" << std::endl;
 		std::cout << "// 3. Generate CSV file //" << std::endl;
 		std::cout << "// 4. Change cycle      //" << std::endl;
-		std::cout << "// 5. Exit              //" << std::endl;
+		std::cout << "// 5. Calculate 1RM     //" << std::endl;
+		std::cout << "// 6. Exit              //" << std::endl;
 		std::cout << "// Training Maxes:      //" << std::endl;
-		std::cout << "// Squat:" << gen.tMax[gen.squat] << "             //" << std::endl;
-		std::cout << "// Bench:" << gen.tMax[gen.bench] << "             //" << std::endl;
-		std::cout << "// Deadlift:" << gen.tMax[gen.deadlift] << "          //" << std::endl;
-		std::cout << "// OHP:" << gen.tMax[gen.ohp] << "               //" << std::endl;
+		std::cout << "// Squat:" << gen.tMax[gen.squat] << "            //" << std::endl;
+		std::cout << "// Bench:" << gen.tMax[gen.bench] << "            //" << std::endl;
+		std::cout << "// Deadlift:" << gen.tMax[gen.deadlift] << "         //" << std::endl;
+		std::cout << "// OHP:" << gen.tMax[gen.ohp] << "              //" << std::endl;
 		std::cout << "//////////////////////////" << std::endl;
 		std::cin >> answer;
 		switch (answer) {
@@ -91,7 +89,10 @@ int main() {
 			std::cout << "Cycle: "; 
 			std::cin >> gen.cycle;
 			break;
-		case 5:
+		case 5: 
+			gen.make1RM();
+			break;
+		case 6:
 			return 0;
 			break;
 		default:
@@ -310,4 +311,26 @@ void Generator::createCSVFile() {
 	generateCSVSets("Bench", 4, tMax[bench], File);
 	generateCSVSets("Deadlift", 4, tMax[deadlift], File);
 	generateCSVSets("OHP", 4, tMax[ohp], File);
+}
+
+void Generator::make1RM() {
+	float weight = 0.0f;
+	int reps = 0;
+	float oneRM = 0.0f;
+	std::cout << "Weight lifted: ";
+	std::cin >> weight; 
+	if(weight <= 0.0f) {
+		std::cout << "You need to enter a number like 42.5" << std::endl;
+		return;
+	}
+	std::cout << "Reps: ";
+	std::cin >> reps; 
+	if(reps <= 0) {
+		std::cout << "You need to enter a number like 5" << std::endl; 
+		return;
+	}
+	oneRM = weight * (36.0f / (37.0f - float(reps))); 
+
+	std::cout << "Your 1RM is =~ " << oneRM << std::endl; 
+
 }
