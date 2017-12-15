@@ -1,12 +1,11 @@
 #include <iostream>
-#include <string>
-#include <fstream>
+#include <fstream>				
 
 ////////////////////////////
 //     TODO: 
 // 
-// 
-//
+//  
+//    
 ////////////////////////////
 
 class Generator {
@@ -28,7 +27,7 @@ public:
 	int cycle = 1;
 	int item[3];	
 
-	double tMax[4] = { 0 };
+	double tMax[4] = { 0.00 };
 
 	enum lifts { squat, bench, deadlift, ohp };
 };
@@ -295,22 +294,22 @@ void Generator::createCSVFile() {
 		return;
 	}
 	//Generates the sets 
-	generateCSVSets("Squat", 1, tMax[squat], File);
-	generateCSVSets("Bench", 1, tMax[bench], File);
-	generateCSVSets("Deadlift", 1, tMax[deadlift], File);
-	generateCSVSets("OHP", 1, tMax[ohp], File);
-	generateCSVSets("Squat", 2, tMax[squat], File);
-	generateCSVSets("Bench", 2, tMax[bench], File);
-	generateCSVSets("Deadlift", 2, tMax[deadlift], File);
-	generateCSVSets("OHP", 2, tMax[ohp], File);
-	generateCSVSets("Squat", 3, tMax[squat], File);
-	generateCSVSets("Bench", 3, tMax[bench], File);
-	generateCSVSets("Deadlift", 3, tMax[deadlift], File);
-	generateCSVSets("OHP", 3, tMax[ohp], File);
-	generateCSVSets("Squat", 4, tMax[squat], File);
-	generateCSVSets("Bench", 4, tMax[bench], File);
-	generateCSVSets("Deadlift", 4, tMax[deadlift], File);
-	generateCSVSets("OHP", 4, tMax[ohp], File);
+	generateCSVSets("Squat", 	1, tMax[squat], 	File);
+	generateCSVSets("Bench", 	1, tMax[bench], 	File);
+	generateCSVSets("Deadlift", 1, tMax[deadlift], 	File);
+	generateCSVSets("OHP", 		1, tMax[ohp], 		File);
+	generateCSVSets("Squat", 	2, tMax[squat], 	File);
+	generateCSVSets("Bench", 	2, tMax[bench], 	File);
+	generateCSVSets("Deadlift", 2, tMax[deadlift], 	File);
+	generateCSVSets("OHP", 		2, tMax[ohp], 		File);
+	generateCSVSets("Squat", 	3, tMax[squat], 	File);
+	generateCSVSets("Bench", 	3, tMax[bench], 	File);
+	generateCSVSets("Deadlift", 3, tMax[deadlift], 	File);
+	generateCSVSets("OHP", 		3, tMax[ohp], 		File);
+	generateCSVSets("Squat", 	4, tMax[squat], 	File);
+	generateCSVSets("Bench", 	4, tMax[bench], 	File);
+	generateCSVSets("Deadlift", 4, tMax[deadlift], 	File);
+	generateCSVSets("OHP", 		4, tMax[ohp], 		File);
 }
 
 void Generator::make1RM() {
