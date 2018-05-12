@@ -2,10 +2,29 @@
 #include <fstream>
 #include <iostream>
 
-int main() {
-    bool running = true; //For the program loop
+//
+// ──────────────────────────────────────────────── I ──────────
+//   :::::: T O D O : :  :   :    :     :        :          :
+// ──────────────────────────────────────────────────────────
+// There are still quite a lot of bugs, compared to how small and
+// horrible this program is. 
+// The known bugs are:
+//  Program stops outputting suddenly           DONE? ()
+//  Program won't generate from start maxes.    DONE? ()
+//
+//
+// ──────────────────────────────────────────────────────── II ──────────
+//   :::::: F E A T U R E S : :  :   :    :     :        :          :
+// ──────────────────────────────────────────────────────────────────
+// A few features still need to be added.  These features include: 
+//  * More Programs (nsuns e.g.)
+//  * Cycles (for 531)
+//  * Hopefully more 
 
-    Generator gen; //Creates an instance of the generator class for 531
+int main() {
+    bool running = true; // For the program loop
+
+    Generator gen; // Creates an instance of the generator class for 531
 
     std::ifstream readMaxes;
     readMaxes.open("Maxes.txt");
@@ -27,20 +46,18 @@ int main() {
     readMaxes.close();
 
     while (running) {
-        std::cout << "//////////////////////////" << std::endl;
-        // std::cout << "// Cycle (WIP): " << gen.cycle << "       //" << std::endl;
-        std::cout << "// 1. Generate program  //" << std::endl;
-        std::cout << "// 2. Update maxes      //" << std::endl;
-        std::cout << "// 3. Generate CSV file //" << std::endl;
-        //std::cout << "// 4. Change cycle      //" << std::endl;
-        std::cout << "// 4. Calculate 1RM     //" << std::endl;
-        std::cout << "// 5. Exit              //" << std::endl;
-        std::cout << "//////////////////////////" << std::endl;
-        std::cout << "Training Maxes: " << std::endl;
-        std::cout << "Squat:" << gen.tMax[gen.squat] << std::endl;
-        std::cout << "Bench:" << gen.tMax[gen.bench] << std::endl;
-        std::cout << "Deadlift:" << gen.tMax[gen.deadlift] << std::endl;
-        std::cout << "OHP:" << gen.tMax[gen.ohp] << std::endl;
+        std::cout << "Training Maxes: " << std::endl
+                  << "Squat:" << gen.tMax[gen.squat] << std::endl
+                  << "Bench:" << gen.tMax[gen.bench] << std::endl
+                  << "Deadlift:" << gen.tMax[gen.deadlift] << std::endl
+                  << "OHP:" << gen.tMax[gen.ohp] << std::endl
+                  << "//////////////////////////" << std::endl
+                  << "// 1. Generate program  //" << std::endl
+                  << "// 2. Update maxes      //" << std::endl
+                  << "// 3. Generate CSV file //" << std::endl
+                  << "// 4. Calculate 1RM     //" << std::endl
+                  << "// 5. Exit              //" << std::endl
+                  << "//////////////////////////" << std::endl;
 
         int answer;
         std::cin >> answer;
@@ -49,15 +66,11 @@ int main() {
             gen.generateProgramFromCurrentMaxes();
             break;
         case 2:
-            gen.getMaxes();
+            gen.getMaxes(); // Update maxes
             break;
         case 3:
-            gen.createCSVFile();
+            gen.createCSVFile(); // Generates content of CSV file also.
             break;
-        //case 4:
-          //  std::cout << "Cycle (WIP): ";
-            //std::cin >> gen.cycle;
-            //break;
         case 4:
             gen.make1RM();
             break;
